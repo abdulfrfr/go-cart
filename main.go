@@ -27,6 +27,7 @@ func (route *route) handleRoutes() {
 
 	// the /items endpoint and function to eb called when the endpoint gets an hit
 	route.Route.HandleFunc("/items", getItems).Methods("GET")
+	route.Route.HandleFunc("/items/{ID}", getItem).Methods("GET")
 
 	// starting a server with the http package and making use of the mux router instead of the default router which value would be nil
 	http.ListenAndServe("localhost:9090", route.Route)
@@ -35,8 +36,15 @@ func (route *route) handleRoutes() {
 
 // Methode for GET request to the /items endpoint
 func getItems(res http.ResponseWriter, req *http.Request) {
+
+	res.Header().Set("Content-type", "application/json")
 	// slice of new instance of the items struct class or object
-	items := []items[string]{{ID: "1", Name: "Buscuit", Price: 10.00}}
+	items := []items[string]{
+		{ID: "1", Name: "Buscuit", Price: 10.00},
+		{ID: "2", Name: "Buscuit", Price: 10.00},
+		{ID: "3", Name: "Buscuit", Price: 10.00},
+		{ID: "4", Name: "Buscuit", Price: 10.00},
+	}
 
 	// parses the slice of into a json and returns it on our web page as our response data, it returns an error if the data passed to it is not successfully parsed
 	err := json.NewEncoder(res).Encode(items)
@@ -49,6 +57,30 @@ func getItems(res http.ResponseWriter, req *http.Request) {
 
 	// log statement for successful request handling
 	log.Println("Successful - Status 200")
+}
+
+func getItem(res http.ResponseWriter, req *http.Request) {
+	items := []items[string]{
+		{ID: "1", Name: "Buscuit", Price: 10.00},
+		{ID: "2", Name: "Buscuit", Price: 10.00},
+		{ID: "3", Name: "Buscuit", Price: 10.00},
+		{ID: "4", Name: "Buscuit", Price: 10.00},
+	}
+	key := mux.Vars(req)["ID"]
+
+	for _, item := range items {
+		if item.ID == key {
+			err := json.NewEncoder(res).Encode(item)
+
+			if err != nil {
+				http.Error(res, "Error parsing json object", http.StatusInternalServerError)
+				return
+			}
+
+			log.Println("Successful - Status 200")
+		}
+	}
+
 }
 
 func main() {
