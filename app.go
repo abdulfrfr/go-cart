@@ -16,6 +16,10 @@ type router struct {
 
 func (route *router) handleRequests() {
 	route.Route.HandleFunc("/items", route.getItems).Methods("GET")
+	route.Route.HandleFunc("/items/{id}", route.getItem).Methods("GET")
+	route.Route.HandleFunc("/items", route.createItem).Methods("POST")
+	route.Route.HandleFunc("/items/{id}", route.deleteItem).Methods("DELETE")
+	route.Route.HandleFunc("/items/{id}", route.updateItem).Methods("PUT")
 }
 
 func (route *router) initialization() {
